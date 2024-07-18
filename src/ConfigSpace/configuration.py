@@ -224,9 +224,16 @@ class Configuration(Mapping[str, Any]):
         hyperparameter = self.config_space[key]
         value = hyperparameter.to_value(vector)
 
+
         # Truncate float to be of constant length for a python version
         if isinstance(hyperparameter, FloatHyperparameter):
             value = float(np.round(value, 16))  # type: ignore
+
+        # Our fixes
+        if isinstance(value, np.bool_):
+            value = bool(value)
+        if isinstance(value, np.int64):
+            value = int(value)
 
         if self._values is None:
             self._values = {}
